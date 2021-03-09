@@ -1,6 +1,9 @@
 from selenium import webdriver
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 import unittest
 from selenium.webdriver.common.keys import Keys
+from selenium.common.exceptions import TimeoutException
 import time
 import math
 
@@ -12,14 +15,17 @@ class test_GoogleSearch(unittest.TestCase):
     def setUpClass(cls):
         cls.driver = webdriver.Chrome()
         cls.driver.get('http://suninjuly.github.io/get_attribute.html')
+        cls.driver.maximize_window()
         time.sleep(2)
 
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
+        print("All test passed!")
 
     def test_Calculate(self):
         driver = self.driver
+
         x_element = driver.find_element_by_id('treasure')
         x = x_element.get_attribute("valuex")
      #   x = x_element.text
@@ -34,14 +40,30 @@ class test_GoogleSearch(unittest.TestCase):
 
         check_box = self.driver.find_element_by_id('robotCheckbox')
         check_box.click()
+        print("robotCheckbox is Clicked ")
         radio_btn = self.driver.find_element_by_id('robotsRule')
         radio_btn.click()
+        print("robotsRule is Clicked ")
         btnSubmit = self.driver.find_element_by_css_selector('button')
         btnSubmit.click()
-        time.sleep(5)
-        print(self.driver.find_element_by_id('answer').text)
-    
+        print("button is Clicked ")
+        time.sleep(1)
 
+        wait = WebDriverWait(driver, 2)
+        rez = wait.until(EC.alert_is_present(),"Alert in not opened")
+        alert = driver.switch_to.alert
+        print("alert text = " + alert.text )
+        alert.accept()
+
+
+    #try:
+        #rez = WebDriverWait(driver, 5).until(EC.alert_is_present(),"Alert in not opened")
+        #alert = driver.switch_to.alert
+        #print("alert text = " + alert.text)
+        #alert.accept()
+    #except TimeoutException:
+    #    print("alert does not Exist in page")   
         
 if __name__ == '__main__':
    unittest.main()         
+  
